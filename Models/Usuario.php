@@ -14,6 +14,7 @@ class Usuario {
 
     public function __construct() {
         $this->con = new Conexion();
+        $this->tiempo = date("Y/m/d H:i:s");
         //capturar el tiempo
     }//ctor
 
