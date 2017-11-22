@@ -1,20 +1,20 @@
 <?php namespace Models;
 	
 class Conexion{
-   
+   /*
     private $datos = array(
 	"host" => "163.178.107.130",
 	"user" => "adm",
 	"pass" => "saucr.092",
 	"db" => "guerrilla_db"
-    );
+    );*/
      
-   /* private $datos = array(
+    private $datos = array(
 	"host" => "localhost",
 	"user" => "root",
 	"pass" => "",
-	"db" => "guerrilla_bd"
-    );*/
+	"db" => "guerrilla_db"
+    );
     
 
     private $con;
