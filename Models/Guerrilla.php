@@ -88,7 +88,7 @@ class Guerrilla {
     }//buy_guerrilla
     
     public function list_guerrillas(){
-        $this->con->conectar();
+       // $this->con->conectar();
         if($_GET['action']=='list_guerrillas'){
             $this->actualiza_puntaje();
             $this->actualiza_ranking();
@@ -100,6 +100,7 @@ class Guerrilla {
             }//while
             echo json_encode($array, JSON_PRETTY_PRINT); 
         }//if
+        $this->con->desconectar();
     }//list_guerrillas
     
     public function actualiza_puntaje(){
@@ -117,8 +118,7 @@ class Guerrilla {
 
     
      public function inspect_guerrilla_username($objJson){
-         $this->cadena = json_decode($objJson);
-         
+         $this->cadena = json_decode($objJson);        
      }//inspect_guerrilla_username
      
      public function inspect_guerrilla_id($objJson){
