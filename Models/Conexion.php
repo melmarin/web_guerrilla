@@ -24,15 +24,30 @@ class Conexion{
 	$this->con = new \mysqli($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
         //Acentos
         \mysqli_set_charset($this->con, "utf8");
+        //si se produjo un error
+        if ($this->con->connect_error) {
+            die('Error de Conexión (' . $this->con->connect_errno . ') '. $this->con->connect_error);
+        }//if
     }
     
     public function conectar(){
 	// \ para que identifica la clase global mysqli cuando utilizamos namespace
-	$this->con = new \mysqli($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
+	/*$this->con = new \mysqli($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
         //Acentos
+        \mysqli_set_charset($this->con, "utf8");*/
+        $this->con->connect($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
         \mysqli_set_charset($this->con, "utf8");
+        //si se produjo un error
+        if ($this->con->connect_error) {
+            die('Error de Conexión (' . $this->con->connect_errno . ') '. $this->con->connect_error);
+        }//if
     }
     
+    public function desconectar(){
+        $this->con->close();
+    }
+
+
     public function consultaSimple($sql){
 	$this->con->query($sql);
     } 

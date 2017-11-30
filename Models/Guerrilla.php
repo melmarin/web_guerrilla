@@ -9,10 +9,13 @@ class Guerrilla {
     private $datos;
     private $usuarioId;
     private $con;
+    private $guerrillaAPI;
 
     public function __construct() {
         $this->con = new Conexion();
-        $this->con->conectar();
+        //$this->con->desconectar();
+        $this->guerrillaAPI = new \API\GuerrillaAPI();
+        //$this->con->conectar();
         //capturar el tiempo
     }//ctor
 
@@ -24,22 +27,30 @@ class Guerrilla {
         return $this->$atributo;
     }//get
     
+   
     public function create_guerrilla(){
         if($_GET['action']=='create_guerrilla'){
             $this->cadena = json_decode(file_get_contents('php://input', true));
             $objArr = (array)$this->cadena;
-            //print_r($objArr);
+            print_r($objArr);
             if (empty($objArr)){
-                 $this->response(422,"error","Nothing to add. Check json");  
+                 $this->guerrillaAPI->response(422,"error","Nothing to add. Check json");  
             }//if
             else {
+                $tiempo = date("Y/m/d H:i:s");
                 $username = $objArr['username'];
-                $this->sql = "SELECT username, usuario_id FROM usuario_guerrilla where username = '$username'";
+                $email = $objArr['email'];
+                $tipo_guerrilla = $objArr['faction'];
+                
+                //$this->con->conectar();
+                $this->sql = "call sp_create_guerrilla('$username','$email','$tiempo', '$tipo_guerrilla')";
                 $this->datos = $this->con->consultaRetorno($this->sql);    
-                $array[] = mysqli_fetch_assoc($this->datos);
+                $row = mysqli_fetch_assoc($this->datos);
+                $array[] = $row;
                 echo json_encode($array, JSON_PRETTY_PRINT); 
             }//else
         }//if
+        $this->con->desconectar();
     }//create_guerrilla
     
     public function buy_guerrilla(){
@@ -61,13 +72,15 @@ class Guerrilla {
                 //print_r($objArr);
                 $username = $objArr['username'];
                 $this->getUsuarioId($username);
-                echo $this->usuarioId;
+                $this->usuarioId;
                 $assault = $objArr['assault'];
                 $engineers = $objArr['engineers'];
                 $tanks = $objArr['tanks'];
                 $bunkers = $objArr ['bunkers'];
                 
-                $this->con->conectar();
+                //$this->con->desconectar();
+                //$this->con.mysqli_init();
+                //$this->con->conectar();
                 $this->sql = "call sp_buy_guerrilla('$this->usuarioId', '$assault', '$engineers', '$tanks', '$bunkers')";
                 $this->con->consultaSimple($this->sql);
             }//else
@@ -75,10 +88,11 @@ class Guerrilla {
     }//buy_guerrilla
     
     public function list_guerrillas(){
+        $this->con->conectar();
         if($_GET['action']=='list_guerrillas'){
             $this->actualiza_puntaje();
             $this->actualiza_ranking();
-            $this->con->conectar();
+            //$this->con->conectar();
             $this->sql = "call sp_obtener_ranking()";
             $this->datos = $this->con->consultaRetorno($this->sql);
             while($row = mysqli_fetch_assoc($this->datos)) {
@@ -89,13 +103,13 @@ class Guerrilla {
     }//list_guerrillas
     
     public function actualiza_puntaje(){
-        $this->con->conectar();
+        //$this->con->conectar();
         $this->sql = "call sp_actualiza_puntaje()";
         $this->con->consultaSimple($this->sql);
     }
     
     public function actualiza_ranking(){
-        $this->con->conectar();
+        //$this->con->conectar();
         $this->sql = "call sp_actualiza_raking()";
         $this->con->consultaSimple($this->sql);
     }
