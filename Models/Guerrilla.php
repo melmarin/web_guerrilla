@@ -131,6 +131,17 @@ class Guerrilla {
          $this->usuarioId = $row['usuario_id'];
     }//getUsuarioId
     
+    public function attackGuerrilla ($user_id){
+       
+          if($_GET['action']=='attack_guerrilla'){
+            $this->cadena = json_decode(file_get_contents('php://input', true));
+            $objArr = (array)$this->cadena;
+         $this->sql = "call sp_actualiza_puntaje(?)";
+         $this->datos = $this->con->consultaRetorno($this->sql);
+        
+    }//getUsuarioId
+    }
+    
 }//class
 
 ?>
