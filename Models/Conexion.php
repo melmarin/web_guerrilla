@@ -16,31 +16,43 @@ class Conexion{
 	"db" => "guerrilla_db"
     );
     
-
     private $con;
 
     public function __construct(){
-	// \ para que identifica la clase global mysqli cuando utilizamos namespace
-	$this->con = new \mysqli($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
-        //Acentos
-        \mysqli_set_charset($this->con, "utf8");
-    }
+        try {
+            $this->con = new \PDO('mysql:host=localhost;dbname=guerrilla_db', $this->datos['user'], $this->datos['pass']);
+            //echo 'Conectado a '.$this->con->getAttribute(\PDO::ATTR_CONNECTION_STATUS);
+        } catch(PDOException $ex) {
+            echo 'Error conectando a la BBDD. '.$ex->getMessage(); 
+          }
+    }//ctor
     
     public function conectar(){
-	// \ para que identifica la clase global mysqli cuando utilizamos namespace
-	$this->con = new \mysqli($this->datos['host'],$this->datos['user'], $this->datos['pass'],$this->datos['db']);
-        //Acentos
-        \mysqli_set_charset($this->con, "utf8");
-    }
-    
+	try {
+            $this->con = new \PDO('mysql:host=localhost;dbname=guerrilla_db', $this->datos['user'], $this->datos['pass']);
+            //echo 'Conectado a '.$this->con->getAttribute(\PDO::ATTR_CONNECTION_STATUS);
+        } catch(PDOException $ex) {
+            echo 'Error conectando a la BBDD. '.$ex->getMessage(); 
+          }
+    }//conectar
+ 
     public function consultaSimple($sql){
+        $this->conectar();
 	$this->con->query($sql);
-    } 
+        $this->desconectar();
+    }//consultaSimple 
 
     public function consultaRetorno($sql){
+        $this->conectar();
     	$datos = $this->con->query($sql);
-	return $datos;
-    }
-}
+	$this->desconectar();
+        return $datos;
+    }//consultaRetorno
+    
+      public function desconectar(){
+        return $this->con = NULL;       
+    }//desconectar
+    
+}//class
 ?>
 
